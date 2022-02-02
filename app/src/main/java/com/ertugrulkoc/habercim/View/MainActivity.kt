@@ -8,14 +8,13 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.ertugrulkoc.habercim.databinding.ActivityMainBinding
-import org.w3c.dom.CharacterData
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import java.io.StringReader
 import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.parsers.DocumentBuilder
+
 //HABERLER.COM
 //https://rss.haberler.com/rss.asp?kategori=sondakika
 
@@ -72,15 +71,31 @@ class MainActivity : AppCompatActivity() {
                 val child = node.firstChild
                 while (child != null) {
                     if (child.nodeType == Node.TEXT_NODE) {
-                        return child.nodeValue
-                    }else{
-                       val newChild :CharacterData= child as CharacterData
-                        val data = child.data
-                        return data
+                        return cdataFilter(child.nodeValue)
+                    } else {
+                        return cdataFilter(child.nodeValue)
                     }
                 }
             }
         }
         return ""
+    }
+
+    private fun cdataFilter(data: String): String {
+        var islenmisData = ""
+        when {
+            data.contains("&amp;#039;") -> {
+                islenmisData = data.replace("&amp;#039;", "")
+                return islenmisData
+            }
+            data.contains("|") -> {
+                islenmisData = data.replace("|","")
+            }
+            else -> {
+                islenmisData = data
+            }
+
+        }
+        return islenmisData
     }
 }
