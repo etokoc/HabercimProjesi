@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
             call.enqueue(object : Callback<Root> {
                 override fun onResponse(call: Call<Root>, response: Response<Root>) {
                     val veri = response.body()
-                    Log.i("cevap", ": " + veri!!.articles!!.get(0).title)
+//                    Log.i("cevap", ": " + veri!!.articles!!.get(0).title)
                 }
 
                 override fun onFailure(call: Call<Root>, t: Throwable) {
