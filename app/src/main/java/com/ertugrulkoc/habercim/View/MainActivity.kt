@@ -8,14 +8,14 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.ertugrulkoc.habercim.databinding.ActivityMainBinding
-import org.w3c.dom.Document
+import org.w3c.dom.CharacterData
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import java.io.StringReader
 import javax.xml.parsers.DocumentBuilderFactory
-
+import javax.xml.parsers.DocumentBuilder
 //HABERLER.COM
 //https://rss.haberler.com/rss.asp?kategori=sondakika
 
@@ -27,14 +27,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-//       val factory = DocumentBuilderFactory.newInstance()
-//        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING,true)
-//        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
-//        val input = factory
-//            .newDocumentBuilder()
-//            .parse()
-
 
         val queue = Volley.newRequestQueue(this)
         val stringRequest = StringRequest(
@@ -57,16 +49,21 @@ class MainActivity : AppCompatActivity() {
     private fun parseXml(response: String) {
         val docBuildFactory = DocumentBuilderFactory.newInstance()
         val docBuilder = docBuildFactory.newDocumentBuilder()
-        val doc  = docBuilder.parse(InputSource(StringReader(response)))
-        val nList :NodeList= doc.getElementsByTagName("channel")
-        for( i in 0..nList.length)
-        {
-            if (nList.item(0).nodeType == Node.ELEMENT_NODE){
-                val element  = nList.item(i) as Element
-                Log.i("cevap", "parseXml: " +getNodeValue("description",element) )
+        val doc = docBuilder.parse(InputSource(StringReader(response)))
+        val nList: NodeList = doc.getElementsByTagName("item")
+        var adet = 0
+        for (i in 0..nList.length) {
+            if (nList.item(0).nodeType == Node.ELEMENT_NODE) {
+                val element = nList.item(i) as Element?
+                if (element != null) {
+                    Log.i("cevap", "parseXml: " + getNodeValue("title", element))
+                    adet = i
+                }
             }
         }
+        Log.i("cevap", "adet: " + adet)
     }
+
     protected fun getNodeValue(tag: String?, element: Element): String? {
         val nodeList: NodeList = element.getElementsByTagName(tag)
         val node = nodeList.item(0)
@@ -76,6 +73,10 @@ class MainActivity : AppCompatActivity() {
                 while (child != null) {
                     if (child.nodeType == Node.TEXT_NODE) {
                         return child.nodeValue
+                    }else{
+                       val newChild :CharacterData= child as CharacterData
+                        val data = child.data
+                        return data
                     }
                 }
             }
