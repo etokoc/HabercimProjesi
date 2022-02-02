@@ -55,7 +55,9 @@ class MainActivity : AppCompatActivity() {
             if (nList.item(0).nodeType == Node.ELEMENT_NODE) {
                 val element = nList.item(i) as Element?
                 if (element != null) {
-                    Log.i("cevap", "parseXml: " + getNodeValue("title", element))
+                    Log.i("cevap", "" + getNodeValue("title", element))
+                    Log.i("cevap", ""+getNodeValue("description",element))
+                    Log.i("cevap", "------------------------------- ")
                     adet = i
                 }
             }
