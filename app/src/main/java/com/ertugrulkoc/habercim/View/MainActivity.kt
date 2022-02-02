@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -22,12 +23,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     val BASE_URL = "https://rss.haberler.com/"
     val url = BASE_URL + "rss.asp?kategori=sondakika"
+    lateinit var queue: RequestQueue
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val queue = Volley.newRequestQueue(this)
+        queue = Volley.newRequestQueue(this)
+        createXmlRequest()//Request yapma methodu.
+    }
+
+    private fun createXmlRequest() {
         val stringRequest = StringRequest(
             Request.Method.GET, url,
             object : com.android.volley.Response.Listener<String?> {
@@ -56,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                 val element = nList.item(i) as Element?
                 if (element != null) {
                     Log.i("cevap", "" + getNodeValue("title", element))
-                    Log.i("cevap", ""+getNodeValue("description",element))
+                    Log.i("cevap", "" + getNodeValue("description", element))
                     Log.i("cevap", "------------------------------- ")
                     adet = i
                 }
@@ -65,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         Log.i("cevap", "adet: " + adet)
     }
 
-    protected fun getNodeValue(tag: String?, element: Element): String? {
+    protected fun getNodeValue(tag: String?, element: Element): String {
         val nodeList: NodeList = element.getElementsByTagName(tag)
         val node = nodeList.item(0)
         if (node != null) {
@@ -83,15 +89,16 @@ class MainActivity : AppCompatActivity() {
         return ""
     }
 
+    //Gelen String veriyi işler temizler ve geri döndürür.
     private fun cdataFilter(data: String): String {
-        var islenmisData = ""
+        val islenmisData: String
         when {
             data.contains("&amp;#039;") -> {
                 islenmisData = data.replace("&amp;#039;", "")
                 return islenmisData
             }
             data.contains("|") -> {
-                islenmisData = data.replace("|","")
+                islenmisData = data.replace("|", "")
             }
             else -> {
                 islenmisData = data

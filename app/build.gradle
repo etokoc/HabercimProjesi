@@ -47,13 +47,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     //Eklediklerim
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation "com.squareup.retrofit2:converter-simplexml:2.5.0"
     implementation 'com.android.volley:volley:1.2.1'
-    testImplementation 'com.jayway.jsonpath:json-path:2.1.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'org.json:json:20211205'
-    implementation 'com.mobprofs:retrofit-simplexmlconverter:1.1'
     implementation 'org.simpleframework:simple-xml:2.7.1'
 
 
