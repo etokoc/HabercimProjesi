@@ -6,4 +6,5 @@ class NewsItem {
     var link: String = ""
     var guid: String = ""
     var pubDate: String = ""
+    var photo: String = ""
 }

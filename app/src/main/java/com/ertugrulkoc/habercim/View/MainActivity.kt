@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                     mNews.link = getNodeValue("link", element) + ""
                     mNews.guid = getNodeValue("guid", element) + ""
                     mNews.pubDate = getNodeValue("pubDate", element) + ""
+                    mNews.photo = getNodeValue("media:content", element) + ""
                     newsList.add(mNews)
                 }
             }
@@ -86,7 +87,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initAdapter(newsList: ArrayList<NewsItem>) {
-        binding.recylerView.adapter = MyRecylerViewAdapter(newsList)
+        binding.recylerView.adapter = MyRecylerViewAdapter(newsList,this.applicationContext)
         binding.recylerView.layoutManager = LinearLayoutManager(this)
     }
 
