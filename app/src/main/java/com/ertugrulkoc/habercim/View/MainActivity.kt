@@ -3,11 +3,14 @@ package com.ertugrulkoc.habercim.View
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.ertugrulkoc.habercim.Model.ApiModel.NewsItem
+import com.ertugrulkoc.habercim.RecylerView.MyRecylerViewAdapter
 import com.ertugrulkoc.habercim.databinding.ActivityMainBinding
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -57,18 +60,34 @@ class MainActivity : AppCompatActivity() {
         val doc = docBuilder.parse(InputSource(StringReader(response)))
         val nList: NodeList = doc.getElementsByTagName("item")
         var adet = 0
+        var newsList = ArrayList<NewsItem>()
         for (i in 0..nList.length) {
             if (nList.item(0).nodeType == Node.ELEMENT_NODE) {
                 val element = nList.item(i) as Element?
                 if (element != null) {
                     Log.i("cevap", "" + getNodeValue("title", element))
                     Log.i("cevap", "" + getNodeValue("description", element))
+                    Log.i("cevap", "" + getNodeValue("link", element))
+                    Log.i("cevap", "" + getNodeValue("media:content", element))
                     Log.i("cevap", "------------------------------- ")
                     adet = i
+                    val mNews = NewsItem()
+                    mNews.title = getNodeValue("title", element) + ""
+                    mNews.description = getNodeValue("description", element) + ""
+                    mNews.link = getNodeValue("link", element) + ""
+                    mNews.guid = getNodeValue("guid", element) + ""
+                    mNews.pubDate = getNodeValue("pubDate", element) + ""
+                    newsList.add(mNews)
                 }
             }
         }
+        initAdapter(newsList)
         Log.i("cevap", "adet: " + adet)
+    }
+
+    private fun initAdapter(newsList: ArrayList<NewsItem>) {
+        binding.recylerView.adapter = MyRecylerViewAdapter(newsList)
+        binding.recylerView.layoutManager = LinearLayoutManager(this)
     }
 
     protected fun getNodeValue(tag: String?, element: Element): String {
@@ -79,6 +98,9 @@ class MainActivity : AppCompatActivity() {
                 val child = node.firstChild
                 while (child != null) {
                     if (child.nodeType == Node.TEXT_NODE) {
+                        if (tag == "media:content") {
+                            return child.parentNode.attributes.getNamedItem("url").textContent//FOTOĞRAF
+                        }
                         return cdataFilter(child.nodeValue)
                     } else {
                         return cdataFilter(child.nodeValue)
